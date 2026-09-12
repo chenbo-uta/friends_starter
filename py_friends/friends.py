@@ -41,11 +41,13 @@ class Friends(Iterator):
             # initially, `persons` is list of all keys; 
             # and `friends` is list of the first person's friends
             self.persons = sorted(friends_dir.keys())
-            self.friends = sorted(friends_dir[self.persons[0]])
+            self.friends = sorted([s for s in friends_dir[self.persons[0]]
+                                   if s > self.persons[0]])
 
         else:
             # handle edge case when input is an empty directory
-            self.person = []
+            self.persons = []
+            self.friends = []
 
     def __iter__(self) -> Iterator:
 
