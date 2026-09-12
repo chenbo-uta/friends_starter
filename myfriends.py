@@ -41,12 +41,20 @@ def load_pairs(filename):
     with open(filename, 'rt') as infile:
 
 # ------------ BEGIN YOUR CODE ------------
+    #loop lines and remove end \n, skip empty lines
+    #for non-empty lines, use "spaces" as seperate, seperate into two string and save as tuples
 
-        
-        pass    # implement your code here
+        for line in infile:
+            if line.strip() != "":
+                persons = line.strip().split(' ')
 
+                #edge cases: skip not two persons, skip two person the same
+                if len(persons) == 2:
+                    list_of_pairs.append(tuple(persons))
+                else:
+                    print(f"line {line.strip()} has more or less than two persons")
 
-# ------------ END YOUR CODE ------------
+   # ------------ END YOUR CODE ------------
 
     return list_of_pairs 
 
@@ -69,10 +77,21 @@ def make_friends_directory(pairs):
     directory = dict()
 
     # ------------ BEGIN YOUR CODE ------------
+    for pair in pairs:
+        #skip if two person same
+        if pair[0] == pair[1]:
+            continue
 
+        # ensure each person in the pair is in the director, if not, then add
+        for person in pair:
+            if person not in directory:
+                directory[person] = set()
+
+        # add two each other friend set, note set() will remove duplicate automatic
+        # so no need to check if already in or not
+        directory[pair[1]].add(pair[0])
+        directory[pair[0]].add(pair[1])
     
-    pass    # implement your code here
-
 
     # ------------ END YOUR CODE ------------
 
@@ -91,8 +110,15 @@ def find_all_number_of_friends(my_dir):
     # ------------ BEGIN YOUR CODE ------------
 
 
-    pass    # implement your code here
-    
+
+
+    # browse the dict and add tuple(name, number) into list
+    for person, friends in my_dir.items():
+        pp_friend_count = (person,len(friends))
+        friends_list.append(pp_friend_count)
+
+    # sort, first based on the number of friends, then based on ASCII order (regardless of upper or lower cases)
+    friends_list.sort(key=lambda x: (x[1],x[0].lower()))
 
     # ------------ END YOUR CODE ------------
 
@@ -121,10 +147,16 @@ def make_team_roster(person, my_dir):
     label = person
 
     # ------------ BEGIN YOUR CODE ------------
-
-    
-    pass    # implement your code here
-
+    friend_circle = set()
+    for friend in my_dir[person]:
+        friend_circle.add(friend)
+        for friend_friend in my_dir[friend]:
+            friend_circle.add(friend_friend)
+    friend_circle.discard(person)
+    friend_circle_lst = list(friend_circle)
+    friend_circle_lst.sort(key=lambda x: x.lower())
+    for friend in friend_circle_lst:
+        label +="_" + friend.upper()
 
     # ------------ END YOUR CODE ------------
 
@@ -138,14 +170,54 @@ def find_smallest_team(my_dir):
     smallest_teams = []
 
     # ------------ BEGIN YOUR CODE
+    min_team_length = float('inf')
+    for person in my_dir:
+        #get person's team roster
+        team_label = make_team_roster(person,my_dir)
 
+        #calculate team size
+        team = team_label.split("_")
+        team_size = len(team)
 
-    pass    # implement your code here
+        if team_size < min_team_length:
+            smallest_teams.insert(0,team_label)
+            min_team_length = team_size
+        elif team_size == min_team_length and team_label<smallest_teams[0]:
+            smallest_teams.insert(0, team_label)
 
-    
     # ------------ END YOUR CODE
 
     return smallest_teams[0] if smallest_teams else ""
+
+def generate_friends(my_dir):
+    """
+    Args:
+        my_dir: friends_dir Dict[str, Set]
+
+    Returns:
+        yielding one pair (as a tuple) at a time in ASCII order
+
+    """
+
+    if my_dir:
+
+        # get person and sort, save in persons list
+        persons = sorted(my_dir.keys())
+        num = -1
+
+        #loop persons list
+        for person in persons:
+            # get sorted friends list of the person
+            friends = sorted(my_dir[person])
+
+            # yield only friend that sort after peron, to avoid (y,x) case
+            for friend in friends:
+                if friend>person:
+                    num +=1
+                    yield num,(person,friend)
+
+    return None
+
 
 
 
@@ -179,3 +251,13 @@ if __name__ == '__main__':
             break
     # since index 0 we read 11 elements
     print(len(list(friends_iterator)) + num + 1)
+
+
+    print('\n7. run generate_friends')
+    num = 0
+    for num,pair in generate_friends(my_dir):
+        print(num,pair)
+        if num == 10:
+            break
+    # different to class object, function will restart, so below is not valid
+    print(len(list(generate_friends(my_dir))) )

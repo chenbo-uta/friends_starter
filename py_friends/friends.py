@@ -68,6 +68,6 @@ class Friends(Iterator):
                                     if s > self.persons[0]])
 
         # return the next friendship pair as a tuple
-        return (self.persons[0], self.friends.pop())
+        return (self.persons[0], self.friends.pop(0))
 
     # ------------ END DEBUG ------------

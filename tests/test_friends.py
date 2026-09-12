@@ -2,12 +2,21 @@
 
 # Note that fulfilling all of these requirements does NOT guarantee a fully correct implementation
 
+####modified section###
+import sys
+from pathlib import Path
+
+# Add parent to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+####
+
 from py_friends.friends import Friends
 import myfriends
 import pytest
 
 # Expected solutions from a simplified test example
-simple_file = 'myfriends.txt'
+test_dir = Path(__file__).parent.parent
+simple_file = test_dir /'myfriends.txt'
 simple_file_len = 58
 comment_length = "function returned list of incorrect length"
 
