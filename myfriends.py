@@ -46,8 +46,12 @@ def load_pairs(filename):
 
         for line in infile:
             if line.strip() != "":
-                persons = line.strip().split(' ')
-
+                # split based on one space
+                words = line.strip().split(' ')
+                persons = []
+                for item in words:
+                    if item != "":
+                        persons.append(item)
                 #edge cases: skip not two persons, skip two person the same
                 if len(persons) == 2:
                     list_of_pairs.append(tuple(persons))
@@ -225,7 +229,7 @@ if __name__ == '__main__':
     # To run and examine your function calls
 
     print('\n1. run load_pairs')
-    my_pairs = load_pairs('myfriends.txt')
+    my_pairs = load_pairs('mytest.txt')
     print(my_pairs)
 
     print('\n2. run make_friends_directory')
