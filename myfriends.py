@@ -112,17 +112,13 @@ def find_all_number_of_friends(my_dir):
     friends_list = []
 
     # ------------ BEGIN YOUR CODE ------------
-
-
-
-
     # browse the dict and add tuple(name, number) into list
     for person, friends in my_dir.items():
         pp_friend_count = (person,len(friends))
         friends_list.append(pp_friend_count)
 
     # sort, first based on the number of friends, then based on ASCII order (regardless of upper or lower cases)
-    friends_list.sort(key=lambda x: (x[1],x[0].lower()))
+    friends_list.sort(key=lambda x: (-x[1],x[0].lower()))
 
     # ------------ END YOUR CODE ------------
 
